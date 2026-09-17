@@ -29,7 +29,8 @@
     "marketplace-bot": "bun run marketplace/bot/cli.ts",
     "test:server": "bun test ./marketplace/server/",
     "marketplace-worker": "bun run marketplace/server/worker.ts",
-    "marketplace-holdings": "bun run marketplace/server/holdingsCli.ts"
+    "marketplace-holdings": "bun run marketplace/server/holdingsCli.ts",
+    "code:context": "bash ./repomix.sh"
   },
   "devDependencies": {
     "@gltf-transform/core": "4.2.0",
@@ -66,7 +67,8 @@
     "nanoid": "5.1.5",
     "postgres": "^3.4.9",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "repomix": "^1.18.0"
   },
   "engines": {
     "node": "20"

@@ -7,11 +7,24 @@ import { deserializeAppearance } from '../../common/deserializeAppearance';
 import {
   characterSlotAngle,
   characterSlotPosition,
+  CHARACTER_CAMERA_FORWARD,
 } from '../../common/characterSelect';
 import { setSceneHold } from '../../common/sceneGate';
 
 /** This system's name on the loading gate (`common/sceneGate.ts`). */
 const GATE = 'characterSelect';
+
+// Step‑forward visual configuration
+const STEP_FORWARD_DISTANCE = 0.35; // world units (roughly 35 cm in MU scale)
+const STEP_SPEED = 0.1; // interpolation factor per frame (0‑1)
+// Direction from character toward the camera (horizontal only)
+const STEP_DIRECTION = new Vector3(
+  -CHARACTER_CAMERA_FORWARD.x,
+  0,
+  -CHARACTER_CAMERA_FORWARD.z
+).normalize();
+// Track per‑entity offset progress (0 = original, 1 = fully stepped forward)
+const offsetMap = new Map<Entity, number>();
 
 export const CharacterSelectSystem: ISystemFactory = world => {
   const spawned: Entity[] = [];
@@ -26,6 +39,7 @@ export const CharacterSelectSystem: ISystemFactory = world => {
 
     spawned.length = 0;
     stagedFor = null;
+    offsetMap.clear();
   };
 
   const stage = () => {
@@ -49,7 +63,7 @@ export const CharacterSelectSystem: ISystemFactory = world => {
       entity.transform.pos.y = position.y;
       entity.transform.pos.z = position.z;
 
-      entity.transform.posOffset = Vector3.ZeroReadOnly;
+      entity.transform.posOffset = Vector3.Zero();
 
       entity.transform.rot.y = characterSlotAngle(character.SlotIndex);
 
@@ -111,6 +125,17 @@ export const CharacterSelectSystem: ISystemFactory = world => {
       if (key !== stagedFor) {
         stage();
         stagedFor = key;
+      }
+
+      // Apply step‑forward animation based on focused character
+      for (const entity of spawned) {
+        const isFocused = entity.objectNameInWorld === Store.focusedChar;
+        const target = isFocused ? 1 : 0;
+        const current = offsetMap.get(entity) ?? 0;
+        const newOffset = Math.abs(current - target) < 0.01 ? target : current + (target - current) * STEP_SPEED;
+        offsetMap.set(entity, newOffset);
+        // Apply horizontal offset toward the camera
+        entity.transform.posOffset = STEP_DIRECTION.scale(STEP_FORWARD_DISTANCE * newOffset);
       }
 
       // Spawned: from here the models are counted by the ready check like
