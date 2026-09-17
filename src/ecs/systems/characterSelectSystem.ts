@@ -1,6 +1,6 @@
 import {
   Color3,
-  MeshBuilder,
+  CreateDisc,
   PointerEventTypes,
   StandardMaterial,
   Vector3,
@@ -28,7 +28,7 @@ export const CharacterSelectSystem: ISystemFactory = world => {
   let selectionRing: Mesh | null = null;
 
   const createSelectionRing = (): Mesh => {
-    const disc = MeshBuilder.CreateDisc(
+    const disc = CreateDisc(
       'charSelectGlowRing',
       { radius: 0.9, tessellation: 32 },
       world.scene
