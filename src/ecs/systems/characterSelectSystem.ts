@@ -4,6 +4,7 @@ import {
   PointerEventTypes,
   StandardMaterial,
   Vector3,
+  GlowLayer,
   type Mesh,
 } from '../../libs/babylon/exports';
 import type { Entity, ISystemFactory } from '../world';
@@ -27,7 +28,14 @@ export const CharacterSelectSystem: ISystemFactory = world => {
 
   let selectionRing: Mesh | null = null;
 
+  let glowLayer: GlowLayer | null = null;
+
   const createSelectionRing = (): Mesh => {
+    if (!glowLayer) {
+      glowLayer = new GlowLayer("charSelectGlow", world.scene);
+      glowLayer.intensity = 0.6; // Ajusta este número (0.1 a 1.0) para más o menos brillo
+    }
+    
     const disc = CreateDisc(
       'charSelectGlowRing',
       { radius: 0.9, tessellation: 32 },
@@ -163,6 +171,14 @@ export const CharacterSelectSystem: ISystemFactory = world => {
         selectionRing.position.x = focusedEntity.transform.pos.x;
         selectionRing.position.y = focusedEntity.transform.pos.y + 0.02;
         selectionRing.position.z = focusedEntity.transform.pos.z;
+
+        // 1. Esto hace que rote un poco en cada frame
+        selectionRing.rotation.y -= 0.015; 
+        
+        // 2. (Opcional) Esto hace el efecto de pulso con la transparencia
+        if (selectionRing.material) {
+           selectionRing.material.alpha = 0.5 + Math.sin(performance.now() * 0.003) * 0.2;
+        }
       } else if (selectionRing) {
         selectionRing.isVisible = false;
       }
