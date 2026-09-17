@@ -102,9 +102,11 @@ export function updateBloodCastleGate(world: World, dt: number): void {
   if (phase === 'up') {
     const p = BLOOD_CASTLE_GATE_PIT;
     if (!(world.getTerrainFlag(p.x + 1, p.y + 2) & TW_NOGROUND)) {
-      // The server already opened the pit: the instant `SetActionObject(36, 0)`.
-      open(world);
-      return;
+      // The pit terrain flag is not set to TW_NOGROUND (e.g. cleared when gate is down/open).
+      if (bloodCastleTimer().gateDestroyed) {
+        open(world);
+        return;
+      }
     }
     if (bloodCastleTimer().gateDestroyed) startFall();
     return;

@@ -55,6 +55,7 @@ const MASTER_SQUARE_NUMBER = 7;
 /** Classes whose level table is the second row (`iLimitLVIndex = 1`). */
 const LOWER_LIMIT_CLASSES: ReadonlySet<BaseClass> = new Set([
   BaseClass.Knight,
+  BaseClass.MagicGladiator,
   BaseClass.DarkLord,
   BaseClass.RageFighter,
 ]);

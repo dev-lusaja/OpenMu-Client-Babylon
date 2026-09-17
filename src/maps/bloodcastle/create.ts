@@ -9,9 +9,11 @@ import { resetBloodCastleGate } from './gate';
 import {
   BLOOD_CASTLE_CANDELABRA_TYPE,
   BLOOD_CASTLE_GATE_DEBRIS_TYPES,
+  BLOOD_CASTLE_GATE_PIT,
   BLOOD_CASTLE_GATE_TYPE,
   BLOOD_CASTLE_LAMP_TYPE,
 } from './spec';
+import { TW_NOGROUND } from '../../common/terrain/consts';
 
 /**
  * Blood Castle (`WD_11BLOODCASTLE1` … `_END` and the master-level 52 - eight
@@ -54,6 +56,10 @@ export async function createBloodCastle(world: World) {
 
   // A fresh instance every warp: the gate stands again.
   resetBloodCastleGate();
+
+  // Ensure the bridge/pit approach to the gate is walkable so players can reach and attack the gate.
+  const p = BLOOD_CASTLE_GATE_PIT;
+  world.setTerrainFlags(p.x, p.y, p.w, p.h, TW_NOGROUND, false);
 
   tiles[BLOOD_CASTLE_CANDELABRA_TYPE] = BloodCastleCandelabraObject;
   tiles[BLOOD_CASTLE_LAMP_TYPE] = BloodCastleLampObject;
