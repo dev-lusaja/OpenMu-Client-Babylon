@@ -76,6 +76,7 @@ export { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 export { Plane } from '@babylonjs/core/Maths/math.plane';
 export { Frustum } from '@babylonjs/core/Maths/math.frustum';
 export { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
+export { CreateDisc } from '@babylonjs/core/Meshes/Builders/discBuilder';
 export { CreateDecal } from '@babylonjs/core/Meshes/Builders/decalBuilder';
 export type { Light } from '@babylonjs/core/Lights/light';
 export { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';

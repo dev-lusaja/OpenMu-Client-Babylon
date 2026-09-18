@@ -24,13 +24,17 @@ export function preloadPregameSprites(
     const total = files.length;
     let done = 0;
 
-    await Promise.all(
-      files.map(file =>
-        loadInterfaceSprite(file)
-          .catch(err => console.error(`Could not preload ${file}:`, err))
-          .finally(() => onProgress?.(++done, total))
-      )
-    );
+    for (const file of files) {
+      try {
+        await loadInterfaceSprite(file);
+      } catch (err) {
+        console.error(`Could not preload ${file}:`, err);
+      } finally {
+        onProgress?.(++done, total);
+      }
+      // Yield to the browser main loop between image decodes to keep frames smooth
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
   });
 
   return pending;
@@ -49,13 +53,14 @@ export function preloadWorldSprites(): Promise<void> {
       files.map(file => `interface/${file}`.toLowerCase())
     );
 
-    await Promise.all(
-      files.map(file =>
-        loadInterfaceSprite(file).catch(err =>
-          console.error(`Could not preload ${file}:`, err)
-        )
-      )
-    );
+    for (const file of files) {
+      try {
+        await loadInterfaceSprite(file);
+      } catch (err) {
+        console.error(`Could not preload ${file}:`, err);
+      }
+      await new Promise(resolve => setTimeout(resolve, 0));
+    }
   });
 
   return worldPending;
